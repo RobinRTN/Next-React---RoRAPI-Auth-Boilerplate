@@ -3,6 +3,8 @@
 class Users::SessionsController < Devise::SessionsController
   include RackSessionsFix
   respond_to :json
+  skip_before_action :authenticate_request!
+
 
   private
 
@@ -14,11 +16,13 @@ class Users::SessionsController < Devise::SessionsController
       }
     }, status: :ok
   end
-  
+
   def respond_to_on_destroy
     if request.headers['Authorization'].present?
-      jwt_payload = JWT.decode(request.headers['Authorization'].split(' ').last, Rails.application.credentials.devise_jwt_secret_key!).first
-      current_user = User.find(jwt_payload['sub'])
+      token = request.headers['Authorization'].split(' ').last
+      decoded_token = JWT.decode(token, ENV['DEVISE_JWT_SECRET_KEY'])
+      user_id = decoded_token.first['sub'] # Assuming 'sub' holds the user ID
+      current_user = User.find_by(id: user_id)
     end
 
     if current_user

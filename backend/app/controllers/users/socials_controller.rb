@@ -1,6 +1,8 @@
 require 'httparty'
 
 class Users::SocialsController < Devise::SessionsController
+  skip_before_action :authenticate_request!
+
   # frozen_string_literal: true
 
   include HTTParty
@@ -14,7 +16,7 @@ class Users::SocialsController < Devise::SessionsController
       user = User.find_or_create_from_google(user_info)
 
       if user.persisted?
-        jwt_token = user.jti
+        jwt_token = generate_jwt_for_user(user)
         render json: {
           status: { code: 200, message: 'Logged in successfully.' },
           data: {
@@ -37,7 +39,7 @@ class Users::SocialsController < Devise::SessionsController
       user = User.find_or_create_from_facebook(user_info)
 
       if user.persisted?
-        jwt_token = user.jti
+        jwt_token = generate_jwt_for_user(user)
         render json: {
           status: { code: 200, message: 'Logged in successfully.' },
           data: {
@@ -61,6 +63,19 @@ class Users::SocialsController < Devise::SessionsController
 
   def facebook_credential_check(token)
     HTTParty.get("https://graph.facebook.com/me?fields=name,email&access_token=#{token}")
+  end
+
+  def generate_jwt_for_user(user)
+    payload = {
+      jti: user.jti,
+      sub: user.id,
+      scp: 'user',
+      aud: nil,
+      iat: Time.now.to_i,
+      exp: 240.hours.from_now.to_i
+    }
+
+    JWT.encode(payload, ENV['DEVISE_JWT_SECRET_KEY'])
   end
 
 end

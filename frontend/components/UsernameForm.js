@@ -3,6 +3,8 @@ import debounce from 'debounce';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import useCustomApi from './CustomApi';
+
 // import PictureSelect from './PicureSelect';
 
 export default function UsernameForm() {
@@ -13,6 +15,7 @@ export default function UsernameForm() {
   const [loading, setLoading] = useState(false);
   const [selectedPicture, setSelectedPicture] = useState(false);
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const API = useCustomApi();
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -20,17 +23,15 @@ export default function UsernameForm() {
 
     const picture_number = selectedPicture.split('_')[1];
 
+
     try {
       setLoading(true);
-      const config = {
-        headers: {
-          Authorization: `Bearer ${authState.accessToken}`,
-        },
-      }
-      await axios.patch(`${baseUrl}/users/update_username`, {
-        username: formValue,
-        picture_number: picture_number
-      }, config);
+      await API.patch(`/v1/users/update_username`, {
+        user: {
+          username: formValue,
+          picture_number: picture_number
+        }
+      });
       updateUsername(formValue);
       toast.success("Nom d'utilisateur et photo de profil confirmés");
     } catch (error) {
@@ -70,13 +71,8 @@ export default function UsernameForm() {
   const checkUsername = useCallback(
     debounce(async (username) => {
       if (username.length >= 3) {
-        const config = {
-          headers: {
-            Authorization: `Bearer ${authState.accessToken}`,
-          },
-        }
         try {
-          const response = await axios.get(`${baseUrl}/users/check_username?username=${username}`, config);
+          const response = await API.get(`/v1/users/check_username?username=${username}`);
           setIsValid(response.data.available);
         } catch (error) {
           console.error('Error checking username', error);
@@ -86,10 +82,10 @@ export default function UsernameForm() {
       }
     }, 500),
     []
-  );
+    );
 
-  return (
-    <div className='flex justify-center'>
+    return (
+      <div className='flex justify-center'>
       <section className='flex flex-col justify-center align-center flex-1 max-w-custom mt-2'>
         <h2 className='mb-3 heavy text-center'>Choisis un nom d'utilisateur</h2>
         <form onSubmit={onSubmit} className='signup-form flex justify-center flex-col gap-2'>
