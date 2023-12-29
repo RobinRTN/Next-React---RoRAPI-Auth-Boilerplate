@@ -53,7 +53,8 @@ Clone the repository and follow the setup instructions for both frontend and bac
 - Run the Rails server: rails s.
 - Ensure redirect URIs are set correctly in Google and Facebook developer consoles.
 JWT Secret Key:
-- Set a secret key for JWT in Rails credentials: EDITOR="nano" rails credentials:edit.
+- Generate and set the JWT Secret Key in the .env file (\\ bundle exec rake secret \\ in terminal)
+- Change if needed the expiration time of the token set in the socials_controller and in devise.rb file
 
 
 ==Directory Structure==
