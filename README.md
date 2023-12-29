@@ -1,9 +1,12 @@
 # Next-React---RoRAPI-Auth-Boilerplate
 
 ==Overview==
+
 This boilerplate provides a foundation for a full-stack application using React Next.js for the frontend and Ruby on Rails for the backend. It features robust user authentication with Devise JWT for token-based authentication and integration with social OAuth providers (Google and Facebook).
 
+
 ==Features==
+
 React Next.js Frontend:
 - Utilizes React hooks and context for state management.
 - Integrates Tailwind and some minor front config - possible to change easily all in globals.css
@@ -21,7 +24,9 @@ Ruby on Rails Backend:
 - No use of the :omniauth devise option as it is handled by the frontend and the socials_controller
 - Secure endpoints with JWT token verification.
 
+
 ==Getting Started==
+
 Clone the repository and follow the setup instructions for both frontend and backend parts of the application.
 
 ==Prerequisites==
@@ -30,14 +35,18 @@ Clone the repository and follow the setup instructions for both frontend and bac
 - PostgreSQL database
 - Google and Facebook Developer accounts for OAuth setup
 
+
 ==Frontend Setup==
+
 - Navigate to the frontend directory.
 - Install dependencies: npm install.
 - Configure environment variables:
 - Set GOOGLE_CLIENT_ID and FACEBOOK_APP_ID in .env. files
 - Run the frontend server: npm run dev.
 
+
 ==Backend Setup==
+
 - Navigate to the backend directory.
 - Install dependencies: bundle install.
 - Setup the database: rails db:create db:migrate.
@@ -46,11 +55,15 @@ Clone the repository and follow the setup instructions for both frontend and bac
 JWT Secret Key:
 - Set a secret key for JWT in Rails credentials: EDITOR="nano" rails credentials:edit.
 
+
 ==Directory Structure==
+
 /frontend: React Next.js application.
 /backend: Ruby on Rails API-only application.
 
+
 ==API Endpoints==
+
 /auth/google_oauth2: Endpoint for Google OAuth.
 /auth/facebook/callback: Endpoint for Facebook OAuth.
 Secure endpoints requiring JWT for access.
