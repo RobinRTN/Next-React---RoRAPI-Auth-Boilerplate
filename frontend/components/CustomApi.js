@@ -33,9 +33,12 @@ const useCustomApi = () => {
 
   API.interceptors.response.use(response => response, error => {
     if (error.response && error.response.status === 401) {
-      clearAuth();
-      router.push('/signin');
-      toast.success('Session expirée, veuillez vous reconnecter');
+      if (router.pathname != '/signin')
+      {
+        clearAuth();
+        router.push('/signin');
+        toast.error('Session expirée, veuillez vous reconnecter');
+      }
     }
     return Promise.reject(error);
   });
